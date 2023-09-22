@@ -53,5 +53,13 @@ public class ChoreServiceTest {
                 () -> service.addChore("Description", LocalDate.now()));
     }
 
+    /*
+     * TODO: Create The following test cases:
+     * 1. When adding a single chore. Compare the results (description, deadline, and isCompleted)
+     * 2. When adding more than one chore. Also compare the results.
+     *
+     */
+
+
 
 }
