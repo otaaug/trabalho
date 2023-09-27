@@ -1,14 +1,14 @@
 package br.edu.unifalmg.service;
 
 import br.edu.unifalmg.domain.Chore;
-import br.edu.unifalmg.exception.DuplicatedChoreException;
-import br.edu.unifalmg.exception.InvalidDeadlineException;
-import br.edu.unifalmg.exception.InvalidDescriptionException;
+import br.edu.unifalmg.exception.*;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 public class ChoreService {
 
@@ -81,5 +81,27 @@ public class ChoreService {
     public List<Chore> getChores() {
         return this.chores;
     }
+
+    /**
+     * Method to delete a given chore.
+     *
+     * @param description The description of the chore
+     * @param deadline The deadline of the chore
+     */
+    public void deleteChore(String description, LocalDate deadline) {
+        if (isChoreListEmpty.test(this.chores)) {
+            throw new EmptyChoreListException("Unable to remove a chore from an empty list");
+        }
+        boolean isChoreExist = this.chores.stream().anyMatch((chore -> chore.getDescription().equals(description)
+            && chore.getDeadline().isEqual(deadline)));
+        if (!isChoreExist) {
+            throw new ChoreNotFoundException("The given chore does not exist.");
+        }
+
+        this.chores = this.chores.stream().filter(chore -> !chore.getDescription().equals(description)
+                && !chore.getDeadline().isEqual(deadline)).collect(Collectors.toList());
+    }
+
+    private final Predicate<List<Chore>> isChoreListEmpty = choreList -> choreList.isEmpty();
 
 }
