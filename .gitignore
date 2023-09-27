@@ -3,6 +3,8 @@
 
 # Directories
 .idea
+.gradle
+todo/build
 
 # Log file
 *.log
