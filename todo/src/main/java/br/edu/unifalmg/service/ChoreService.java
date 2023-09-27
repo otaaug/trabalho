@@ -73,4 +73,13 @@ public class ChoreService {
         return chore;
     }
 
+    /**
+     * Get the added chores.
+     *
+     * @return List<Chore> The chores added until now.
+     */
+    public List<Chore> getChores() {
+        return this.chores;
+    }
+
 }
