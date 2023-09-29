@@ -115,4 +115,63 @@ public class ChoreServiceTest {
         assertEquals(0, service.getChores().size());
     }
 
+    @Test
+    @DisplayName("#toggleChore > When the deadline is valid > Toggle the chore")
+    void toggleChoreWhenTheDeadlineIsValidToggleTheChore() {
+        ChoreService service = new ChoreService();
+        service.addChore("Chore #01", LocalDate.now());
+        assertFalse(service.getChores().get(0).getIsCompleted());
+
+        assertDoesNotThrow(() -> service.toggleChore("Chore #01", LocalDate.now()));
+
+        assertTrue(service.getChores().get(0).getIsCompleted());
+    }
+
+    @Test
+    @DisplayName("#toggleChore > When the deadline is valid > When toggle the chore twice > Toggle chore")
+    void toggleChoreWhenTheDeadlineIsValidWhenToggleTheChoreTwiceToggleTheChore() {
+        ChoreService service = new ChoreService();
+        service.addChore("Chore #01", LocalDate.now());
+        assertFalse(service.getChores().get(0).getIsCompleted());
+
+        assertDoesNotThrow(() -> service.toggleChore("Chore #01", LocalDate.now()));
+
+        assertTrue(service.getChores().get(0).getIsCompleted());
+
+        assertDoesNotThrow(() -> service.toggleChore("Chore #01", LocalDate.now()));
+
+        assertFalse(service.getChores().get(0).getIsCompleted());
+    }
+
+    @Test
+    @DisplayName("#toggleChore > When the chore does not exist > Throw an exception")
+    void toggleChoreWhenTheChoreDoesNotExistThrowAnException() {
+        ChoreService service = new ChoreService();
+        assertThrows(ChoreNotFoundException.class, () -> service.toggleChore("Chore #01", LocalDate.now()));
+    }
+
+    @Test
+    @DisplayName("#toggleChore > When the deadline is invalid > When the status is uncompleted > Toggle the chore")
+    void toggleChoreWhenTheDeadlineIsInvalidWhenTheStatusInUncompletedToggleTheChore() {
+        ChoreService service = new ChoreService();
+        service.addChore("Chore #01", LocalDate.now());
+        assertFalse(service.getChores().get(0).getIsCompleted());
+        service.getChores().get(0).setDeadline(LocalDate.now().minusDays(1));
+
+        assertDoesNotThrow(() -> service.toggleChore("Chore #01", LocalDate.now().minusDays(1)));
+        assertTrue(service.getChores().get(0).getIsCompleted());
+    }
+
+    @Test
+    @DisplayName("#toggleChore > When the deadline is invalid > When status is completed > Throw an exception")
+    void toggleChoreWhenTheDeadlineIsInvalidWhenStatusIsCompletedThrowAnException() {
+        ChoreService service = new ChoreService();
+        service.getChores().add(new Chore("Chore #01", Boolean.TRUE, LocalDate.now().minusDays(1)));
+
+        assertThrows(ToggleChoreWithInvalidDeadlineException.class, () ->
+                service.toggleChore("Chore #01", LocalDate.now().minusDays(1))
+        );
+
+    }
+
 }
