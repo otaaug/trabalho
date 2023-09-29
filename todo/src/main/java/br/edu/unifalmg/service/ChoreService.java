@@ -1,6 +1,7 @@
 package br.edu.unifalmg.service;
 
 import br.edu.unifalmg.domain.Chore;
+import br.edu.unifalmg.enumerator.ChoreFilter;
 import br.edu.unifalmg.exception.*;
 
 import java.time.LocalDate;
@@ -127,6 +128,10 @@ public class ChoreService {
             chore.setIsCompleted(!chore.getIsCompleted());
             return chore;
         }).collect(Collectors.toList());
+    }
+
+    public List<Chore> filterChores(ChoreFilter filter) {
+        return null;
     }
 
     private final Predicate<List<Chore>> isChoreListEmpty = choreList -> choreList.isEmpty();
