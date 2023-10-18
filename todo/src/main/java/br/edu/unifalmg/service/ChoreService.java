@@ -141,7 +141,36 @@ public class ChoreService {
                 return this.chores;
         }
     }
-
+    public String printChores(){
+        if(isChoreListEmpty.test(this.chores)){
+            throw new EmptyChoreListException("Unable to remove a chore from an empty list"); }
+            StringBuilder retorno = new StringBuilder();
+            for(Chore chore : chores){
+                  if(chore.getIsCompleted()) {
+            retorno.append("Description: ").append(chore.getDescription()).append(" - Deadline: ").append(chore.getDeadline()).append(" - Status: Completa\n"); }
+        else { retorno.append("Description: ").append(chore.getDescription()).append(" - Deadline: ").append(chore.getDeadline()).append(" - Status: Incompleta\n"); }
+        } return retorno.toString(); }
     private final Predicate<List<Chore>> isChoreListEmpty = choreList -> choreList.isEmpty();
+
+    public void editChore(String oldDescription, LocalDate oldDeadline, String newDescription, LocalDate newDeadline) {
+        boolean isChoreExist = this.chores.stream().anyMatch((chore) -> chore.getDescription().equals(oldDescription) && chore.getDeadline().isEqual(oldDeadline));
+        if (!isChoreExist) {
+            throw new ChoreNotFoundException("Chore not found. Impossible to edit!");
+        }
+
+        boolean isDuplicateChore = this.chores.stream().anyMatch((chore) -> chore.getDescription().equals(newDescription) && chore.getDeadline().isEqual(newDeadline));
+        if (isDuplicateChore) {
+            throw new DuplicatedChoreException("New chore description and deadline match an existing chore.");
+        }
+
+        this.chores = this.chores.stream().map(chore -> {
+            if (!chore.getDescription().equals(oldDescription) && !chore.getDeadline().isEqual(oldDeadline)) {
+                return chore;
+            }
+            chore.setDescription(newDescription);
+            chore.setDeadline(newDeadline);
+            return chore;
+        }).collect(Collectors.toList());
+    }
 
 }
